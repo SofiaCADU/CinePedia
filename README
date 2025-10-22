@@ -1,0 +1,101 @@
+(The file `c:\Users\ASUS-BOOK\Desktop\cine_sofia\README` exists, but is empty)
+# CinePedia - Proyecto Flask (Sofía Cáceres)
+
+Proyecto de ejemplo en Flask para gestionar información de películas (CinePedia). Este README explica cómo poner en marcha el proyecto en Windows usando PowerShell.
+
+## Requisitos
+
+- Python 3.10+ (o la versión usada al crear el entorno virtual)
+- MySQL si vas a usar la base de datos local
+- Acceso a PowerShell en Windows
+
+## Estructura importante
+
+- `server.py` - punto de entrada de la aplicación Flask
+- `requirements.txt` - dependencias Python
+- `Scripts.sql` - script SQL para crear la base de datos/tabla(s)
+- `base/` - contiene plantillas y static usados por la app
+- `all/` - entorno virtual (si ya existe en el proyecto)
+
+## Activar el entorno virtual en PowerShell
+
+Si el entorno virtual está en `all\` (como en este proyecto), activa el entorno con PowerShell así:
+
+1) Abre PowerShell en la carpeta del proyecto (por ejemplo: `C:\Users\ASUS-BOOK\Desktop\cine_sofia`).
+
+2) Para permitir la ejecución temporal de scripts (solo para la sesión actual), ejecuta:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+```
+
+3) Activa el entorno virtual:
+
+```powershell
+.\all\Scripts\Activate.ps1
+```
+
+Deberías ver el nombre del entorno entre paréntesis en el prompt, por ejemplo `(all)`.
+
+Si no tienes un entorno virtual, créalo con:
+
+```powershell
+python -m venv all
+.\all\Scripts\Activate.ps1
+```
+
+## Instalar dependencias
+
+Con el entorno activado, instala las dependencias:
+
+```powershell
+pip install -r requirements.txt
+```
+
+## Configurar la base de datos
+
+1) Crea la base de datos en MySQL o ejecuta el script `Scripts.sql` usando MySQL Workbench o el cliente `mysql`:
+
+```sql
+-- Desde MySQL CLI
+SOURCE Scripts.sql;
+```
+
+2) Si necesitas agregar la relación entre `peliculas` y `usuarios`, usa este SQL (sin acentos en el nombre de la base):
+
+```sql
+ALTER TABLE `certificacion_sofia`.`peliculas`
+ADD COLUMN `usuario_id` INT NOT NULL AFTER `id`,
+ADD INDEX `fk_peliculas_usuario_idx` (`usuario_id` ASC),
+ADD CONSTRAINT `fk_peliculas_usuario`
+	FOREIGN KEY (`usuario_id`)
+	REFERENCES `certificacion_sofia`.`usuarios` (`id`)
+	ON DELETE CASCADE
+	ON UPDATE NO ACTION;
+```
+
+Nota: Ajusta el nombre de la base de datos si tu base se llama distinto. Asegúrate de que las tablas `peliculas` y `usuarios` existen y que `usuarios.id` sea compatible (INT).
+
+## Ejecutar la aplicación
+
+Con el entorno activado y las dependencias instaladas:
+
+```powershell
+python server.py
+```
+
+Abre el navegador en http://127.0.0.1:5000/ para ver la aplicación.
+
+## Assets (logo)
+
+Para que el logo aparezca junto al título en la barra de navegación, coloca un archivo llamado `logo.png` en `base/static/`.
+
+## Problemas comunes
+
+- Error al activar el entorno en PowerShell: ejecutar `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process` antes de activar.
+- ERROR de MySQL al crear foreign key: verifica tipos y existencia de tablas/columnas.
+
+## Contacto
+
+Si necesitas ayuda adicional, deja un issue o contáctame.
+

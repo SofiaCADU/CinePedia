@@ -1,0 +1,81 @@
+<!-- base/templates/mostrar_pelicula.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Ver peli {% endblock %}
+
+{% block content %}
+<section class="container mx-auto mt-5">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="card-title mb-0">{{ pelicula.titulo }}</h3>
+            <a href="{{ url_for('peliculas.index') }}" class="btn btn-secondary btn-sm">Volver</a>
+        </div>
+        <div class="card-body">
+            <dl class="row let">
+                <dt class="col-sm-3">Director</dt>
+                <dd class="col-sm-9">{{ pelicula.director or '-' }}</dd>
+
+                <dt class="col-sm-3">Fecha</dt>
+                <dd class="col-sm-9">{% if pelicula.fecha_estreno %}{{ pelicula.fecha_estreno|format_date('%d/%m/%Y') }}{% else %} - {% endif %}</dd>
+
+                <dt class="col-sm-3">Sinopsis</dt>
+                <dd class="col-sm-9">{{ pelicula.sinopsis or '-' }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE COMENTARIOS -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h4 class="mb-0">Comentarios</h4>
+        </div>
+        <div class="card-body">
+            <!-- Formulario para agregar comentario, esto solo se permite su el usuario no es el dueño de la pelicula -->
+            {% if session.usuario_id != pelicula.usuario_id %}
+            <form action="{{ url_for('comentarios.crear_comentario', pelicula_id=pelicula.id) }}" method="POST" class="mb-4">
+                <div class="mb-3">
+                    <label for="contenido" class="form-label let">Agregar un comentario:</label>
+                    <textarea id="contenido" name="contenido" class="form-control" rows="3" placeholder="Escribe tu comentario aquí..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar Comentario</button>
+            </form>
+            {% else %}
+            <div class="alert alert-info">
+                No puedes comentar tu propia película.
+            </div>
+            {% endif %}
+
+            <hr>
+
+            <!-- Lista de comentarios -->
+            {% if comentarios %}
+                <h5 class="let mb-3">Comentarios ({{ comentarios|length }})</h5>
+                {% for comentario in comentarios %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ comentario.usuario_nombre|capitalize }} {{ comentario.usuario_apellido|capitalize }}
+                                    <small class="text-muted">- {{ comentario.create_at.strftime('%d/%m/%Y %H:%M') if comentario.create_at else '' }}</small>
+                                </h6>
+                                <p class="card-text let mb-0">{{ comentario.contenido }}</p>
+                            </div>
+                            <!-- Solo el dueño del comentario puede eliminarlo -->
+                            {% if session.usuario_id == comentario.usuario_id %}
+                            <form action="{{ url_for('comentarios.eliminar_comentario', comentario_id=comentario.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar comentario?')">Eliminar</button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted let">No hay comentarios aún. ¡Sé el primero en comentar!</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

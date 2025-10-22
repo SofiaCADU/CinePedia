@@ -1,0 +1,32 @@
+<!-- base/templates/editar_pelicula.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Editar peli {% endblock %}
+
+{% block content %}
+<section class="container-fluid mx-auto">
+    <div class="container justify-content-center mt-5">
+        <h1>Editar peli: {{ pelicula.titulo }}</h1>
+        <form action="{{ url_for('peliculas.actualizar_pelicula', pelicula_id=pelicula.id) }}" method="POST">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Nombre de la película:</label>
+                <input type="text" id="titulo" name="titulo" class="form-control" value="{{ form.titulo if form else pelicula.titulo }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="director" class="form-label">Director:</label>
+                <input type="text" id="director" name="director" class="form-control" value="{{ form.director if form else pelicula.director }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="fecha_estreno" class="form-label">Fecha estreno:</label>
+                <input type="date" id="fecha_estreno" name="fecha_estreno" class="form-control" value="{{ form.fecha_estreno if form else (pelicula.fecha_estreno.strftime('%Y-%m-%d') if pelicula.fecha_estreno else '') }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="sinopsis" class="form-label">Sinopsis:</label>
+                <textarea id="sinopsis" name="sinopsis" class="form-control" rows="3" required>{{ form.sinopsis if form else pelicula.sinopsis }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Actualizar Película</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

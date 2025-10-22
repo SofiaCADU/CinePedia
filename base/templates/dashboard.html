@@ -1,0 +1,41 @@
+<!-- base/template/dashboard.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} CinePedia {% endblock %}
+
+{% block content %}
+<section class="container-fluid mx-auto">
+    <div class="container justify-content-center mt-5">
+        <h1>Bienvenid@ {{ usuario.nombre|capitalize if usuario else '' }}</h1>
+        <a href="{{ url_for('usuarios.logout') }}" class="btn btn-secondary mb-3 float-end">Cerrar sesión</a>
+    </div>
+    <div class="col-md-8">
+        <a href="{{ url_for('peliculas.nueva_pelicula') }}" class="btn btn-primary mb-3">Nueva película</a>
+
+        {% if peliculas %}
+            <ul class="card list-group">
+                {% for pelicula in peliculas %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <p> <strong>{{ pelicula.titulo }}</strong> |-| {{ pelicula.director }} |-| {% if pelicula.fecha_estreno %}{{ pelicula.fecha_estreno.strftime('%d/%m/%Y') if pelicula.fecha_estreno else pelicula.fecha_estreno }}{% endif %}</p>
+                    
+                    <div>
+                        <a href="{{ url_for('peliculas.mostrar_pelicula', pelicula_id=pelicula.id) }}">Ver</a>
+                        
+                        {# NUEVO: Solo mostrar editar y eliminar si el usuario es el creador #}
+                        {% if session.usuario_id == pelicula.usuario_id %}
+                        <a href="{{ url_for('peliculas.editar_pelicula', pelicula_id=pelicula.id) }}" class="me-2">Editar</a>
+                        <form action="{{ url_for('peliculas.eliminar_pelicula', pelicula_id=pelicula.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar?')">Eliminar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay películas registradas.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

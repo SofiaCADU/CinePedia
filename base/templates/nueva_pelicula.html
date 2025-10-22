@@ -1,0 +1,37 @@
+<!-- base/templates/nueva_pelicula.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Nueva peli {% endblock %}
+
+{% block content %}
+<section class="container mx-auto mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 card shadow p-4">
+            <h1 class="mb-4">Nueva película</h1>
+            <form action="{{ url_for('peliculas.nueva_pelicula') }}" method="POST">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Nombre de la película:</label>
+                    <input type="text" id="titulo" name="titulo" class="form-control" value="{{ form.titulo if form else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="director" class="form-label">Director:</label>
+                    <input type="text" id="director" name="director" class="form-control" value="{{ form.director if form else '' }}" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="fecha_estreno" class="form-label">Fecha estreno:</label>
+                    <input type="date" id="fecha_estreno" name="fecha_estreno" class="form-control" value="{{ form.fecha_estreno if form else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="sinopsis" class="form-label">Sinopsis:</label>
+                    <textarea id="sinopsis" name="sinopsis" class="form-control" rows="3" required>{{ form.sinopsis if form else '' }}</textarea>
+                </div>
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Guardar Película</button>
+                    <a href="{{ url_for('peliculas.index') }}" class="btn btn-secondary">Volver al Dashboard</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

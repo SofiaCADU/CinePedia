@@ -1,0 +1,49 @@
+<!-- base/templates/auth.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Bienvenid@s {% endblock %}
+
+{% block content %}
+<h1 class="text-center mt-4">Bienvenid@s</h1>
+
+<div class="d-flex justify-content-around my-5">
+    <form action="{{ url_for('usuarios.registrar') }}" method="post" class="col-4 p-4 text-dark card shadow">
+        <h2 class="text-primary mt-3">Registrarse</h2>
+        <div class="mb-3">
+            <label class="form-label">Nombre</label>
+            <input name="nombre" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Apellido</label>
+            <input name="apellido" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Confirmar contraseña</label>
+            <input type="password" name="confirm" class="form-control" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Registrar</button>
+    </form>
+
+    <form action="{{ url_for('usuarios.login') }}" method="post" class="col-4 p-4 text-dark card shadow mt-3">
+        <h2 class="text-primary mt-3">Ingresar</h2>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <button class="btn btn-primary" type="submit">Ingresar</button>
+    </form>
+</div>
+{% endblock %}
